@@ -29,6 +29,8 @@ class ProcessProprete:
         merged.drop('period_year_month', axis=1, inplace=True)
         merged.drop('Mois', axis=1, inplace=True)
 
+        merged.rename(columns={'Taux de conformité': 'taux_proprete'}, inplace=True)
+
         if self.next is not None:
             return self.next.process(merged, verbose)
         else:

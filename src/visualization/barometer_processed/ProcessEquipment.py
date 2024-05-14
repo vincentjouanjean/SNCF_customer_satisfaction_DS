@@ -29,6 +29,9 @@ class ProcessEquipment:
 
         merged = pd.concat([merged, barometer_not_2021])
 
+        merged.rename(columns={'Accessibilité_x': 'accessibilite_list'}, inplace=True)
+        merged.rename(columns={'Accessibilité_y': 'accessibilite_quantity'}, inplace=True)
+
         if self.next is not None:
             return self.next.process(merged, verbose)
         else:

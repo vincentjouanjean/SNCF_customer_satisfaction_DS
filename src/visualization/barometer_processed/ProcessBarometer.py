@@ -32,6 +32,8 @@ class ProcessBarometer:
         # Convert Code UIC to string
         self.df['Code UIC'] = self.df['Code UIC'].apply(lambda x: str(int(x)))
 
+        # TODO UIC replace Gare "PERIGUEUX" par 87595009
+
         if verbose:
             self.visualize_after_process()
 
@@ -64,6 +66,9 @@ class ProcessBarometer:
 
         # 255 na Code UIC
         display(self.df.isna().sum())
+
+        # PERIGUEUX n'a pas le bon UIC code
+        display(self.df[self.df[['Code UIC', 'period']].duplicated(keep=False)])
 
     def visualize_after_process(self):
         display(self.df.isna().sum())

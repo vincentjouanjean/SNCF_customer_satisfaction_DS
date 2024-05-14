@@ -14,10 +14,11 @@ class ProcessPiano:
 
         piano = piano[piano['UIC'].notna()]
         piano['Code UIC'] = piano['UIC'].apply(lambda x: str(int(x))[2:])
-
-        display(piano.head(5))
+        piano.drop(['Gare'], axis=1, inplace=True)
 
         merged = df.merge(piano, how='left', left_on='Code UIC', right_on="Code UIC")
+
+        merged.rename(columns={'total': 'piano_quantity'}, inplace=True)
 
         if self.next is not None:
             return self.next.process(merged, verbose)
