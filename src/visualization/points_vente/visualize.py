@@ -5,16 +5,16 @@ from numpy.core.defchararray import upper
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
-barometer = pd.read_csv('../../data/processed/barometer_clean.csv')
+barometer = pd.read_csv('../../../data/processed/barometer_clean.csv')
 
-barometer = barometer.loc[barometer['period'] == 'mai 2023']
+#barometer = barometer.loc[barometer['period'] == 'mai 2023']
 
-points_vente = pd.read_csv('../../data/raw/horaire/points-vente.csv', sep=';')
+obj = pd.read_csv('../../../data/raw/obj/objets-trouves-gares.csv', sep=';')
 
-points_vente['Gare - code uic'] = points_vente['Gare - code uic'].apply(lambda x: str(x)[2:])
+obj['Code UIC'] = obj['Code UIC'].apply(lambda x: str(x)[2:])
 barometer['Code UIC'] = barometer['Code UIC'].apply(lambda x: str(x))
 
-display(points_vente['Type de point de vente'].unique())
+display(obj['Type de point de vente'].unique())
 
 merged = barometer.merge(points_vente, how='left', left_on='Code UIC', right_on="Gare - code uic")
 
@@ -34,6 +34,12 @@ display(merged['Type de point de vente'].unique())
 merged = barometer.merge(points_vente, how='left', left_on='Code UIC', right_on="Gare - code uic")
 
 ff = merged.join(merged['Type de point de vente'].str.get_dummies())
+ff['Espèces'] = ff['Espèces'].replace('Oui', 1)
+ff['Espèces'] = ff['Espèces'].replace('Non', 0)
+ff = ff.join(pd.get_dummies(merged['Espèces'], prefix='espece'))
+ff['Chèque'] = ff['Chèque'].replace('Oui', 1)
+ff['Chèque'] = ff['Chèque'].replace('Non', 0)
+ff = ff.join(pd.get_dummies(merged['Chèque'], prefix='cheque'))
 
 ff = ff.select_dtypes(include='number')
 
