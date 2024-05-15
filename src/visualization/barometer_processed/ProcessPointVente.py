@@ -24,10 +24,6 @@ class ProcessPointVente:
         merged = merged.merge(point_type3, how='left', left_on='Code UIC', right_on="Code UIC")
         merged = merged.merge(point_type4, how='left', left_on='Code UIC', right_on="Code UIC")
 
-        point_payment = point[['Code UIC', 'CB', 'Chèque', 'Espèces']].drop_duplicates()
-
-        display(point_payment)
-
         #merged = merged.merge(point_payment, how='left', left_on='Code UIC', right_on="Code UIC")
         # merged.drop('Gare - code uic', axis=1, inplace=True)
         # merged.drop('Pays', axis=1, inplace=True)

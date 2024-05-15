@@ -6,10 +6,9 @@ from IPython.core.display_functions import display
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
-barometer = pd.read_csv('../../../data/processed/barometer_clean.csv')
+barometer = pd.read_csv('../../../data/processed/barometer_processed.csv')
 
-display(barometer.info())
 
-sns.pairplot(data = barometer[['_global','p1','p2','p3', 'p4','p5','p6', 'p7']],diag_kind = 'hist')
+sns.boxplot(data = barometer['taux_proprete'])
 
 plt.show()
