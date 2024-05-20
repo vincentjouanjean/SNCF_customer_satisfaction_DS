@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 from IPython.core.display_functions import display
 
@@ -6,24 +5,40 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
 
-class ProcessDistance:
+class ProcessFrequentation:
     def __init__(self):
         self.next = None
+
+    def merged(self, year, period, df, freq):
+        barometer_year = df.loc[df['period'] == period]
+        barometer_not_year = df.loc[df['period'] != period]
+        barometer_year = barometer_year.drop(columns=['Total Voyageurs', 'Total Voyageurs + Non voyageurs'],
+                                             errors='ignore')
+
+        freq_year = freq[['Code UIC', 'Total Voyageurs ' + year, 'Total Voyageurs + Non voyageurs ' + year]]
+        freq_year = freq_year.rename(columns={
+            'Total Voyageurs ' + year: 'Total Voyageurs',
+            'Total Voyageurs + Non voyageurs ' + year: 'Total Voyageurs + Non voyageurs'
+        })
+        merged_tmp = barometer_year.merge(freq_year, how='left', left_on='Code UIC', right_on="Code UIC")
+        return pd.concat([merged_tmp, barometer_not_year])
 
     def process(self, df: pd.DataFrame, verbose: bool) -> pd.DataFrame:
         self.df = df
 
-        ponctualite = pd.read_csv('../../../data/raw/voyage/distance-parcourue.csv', sep=';')
+        frequentation = pd.read_csv('../../../data/raw/voyage/frequentation-gares.csv', sep=';')
 
+        frequentation['Code UIC'] = frequentation['Code UIC'].apply(lambda x: str(int(x))[2:])
         df['period_year'] = df['period'].apply(lambda x: x.split(' ')[1])
-        df['period_month'] = df['period'].apply(lambda x: x.split(' ')[0]
-                                                .replace('mars', "03")
-                                                .replace('mai', "05")
-                                                .replace('sept', "09"))
-        df['period_year_month'] = df['period_year'] + '-' + df['period_month']
 
-        merged = df.merge(ponctualite, how='left', left_on='period_year_month',
-                          right_on='Date')
+        merged = self.merged('2022', 'sept 2022', df, frequentation)
+        display(merged.head(5))
+        merged = self.merged('2022', 'mars 2022', merged, frequentation)
+        merged = self.merged('2021', 'sept 2021', merged, frequentation)
+        merged = self.merged('2021', 'mars 2021', merged, frequentation)
+        merged = self.merged('2020', 'sept 2020', merged, frequentation)
+        merged = self.merged('2019', 'sept 2019', merged, frequentation)
+        merged = self.merged('2019', 'mars 2019', merged, frequentation)
 
         if self.next is not None:
             return self.next.process(merged, verbose)
