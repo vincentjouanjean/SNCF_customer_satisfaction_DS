@@ -32,7 +32,6 @@ class ProcessFrequentation:
         df['period_year'] = df['period'].apply(lambda x: x.split(' ')[1])
 
         merged = self.merged('2022', 'sept 2022', df, frequentation)
-        display(merged.head(5))
         merged = self.merged('2022', 'mars 2022', merged, frequentation)
         merged = self.merged('2021', 'sept 2021', merged, frequentation)
         merged = self.merged('2021', 'mars 2021', merged, frequentation)

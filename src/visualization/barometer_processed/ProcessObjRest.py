@@ -32,9 +32,9 @@ class ProcessObjRest:
 
         merged = df.merge(obj_count, how='left', left_on=['period_year_month', "Code UIC"],
                           right_on=['Date', 'Code UIC'])
-        display(merged.head(15))
-        merged['0_y'].fillna(0, inplace=True)
-        # TODO rename
+
+        merged[0].fillna(0, inplace=True)
+        merged = merged.rename(columns={0: 'returned_items'})
 
         if self.next is not None:
             return self.next.process(merged, verbose)

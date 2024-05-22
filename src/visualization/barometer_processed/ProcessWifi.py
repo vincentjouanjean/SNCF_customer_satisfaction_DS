@@ -20,6 +20,8 @@ class ProcessWifi:
 
         merged = df.merge(wifi, how='left', left_on='Code UIC', right_on="Code UIC")
 
+        merged['Service Wifi'] = merged['Service Wifi'].replace({'Oui': 1, 'Non': 0})
+
         if self.next is not None:
             return self.next.process(merged, verbose)
         else:

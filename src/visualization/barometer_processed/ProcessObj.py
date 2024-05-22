@@ -21,8 +21,6 @@ class ProcessObj:
 
         obj_count = obj[['Date', 'Code UIC']].groupby(['Date', 'Code UIC']).size().to_frame()
 
-        display(obj_count.head(15))
-
         df['period_year'] = df['period'].apply(lambda x: x.split(' ')[1])
         df['period_month'] = df['period'].apply(lambda x: x.split(' ')[0]
                                                 .replace('mars', "03")
@@ -32,8 +30,10 @@ class ProcessObj:
 
         merged = df.merge(obj_count, how='left', left_on=['period_year_month', "Code UIC"],
                           right_on=['Date', 'Code UIC'])
+
+
         merged[0].fillna(0, inplace=True)
-        # TODO rename
+        merged = merged.rename(columns={0: 'items_found'})
 
         if self.next is not None:
             return self.next.process(merged, verbose)

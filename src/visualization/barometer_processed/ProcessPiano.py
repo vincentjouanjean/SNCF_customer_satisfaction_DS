@@ -18,7 +18,12 @@ class ProcessPiano:
 
         merged = df.merge(piano, how='left', left_on='Code UIC', right_on="Code UIC")
 
-        merged.rename(columns={'total': 'piano_quantity'}, inplace=True)
+        merged.rename(columns={'total': 'service_attente_quantity'}, inplace=True)
+        merged['Piano'] = merged['Piano'].fillna(0)
+        merged['Power&Station'] = merged['Power&Station'].fillna(0)
+        merged['Baby-Foot'] = merged['Baby-Foot'].fillna(0)
+        merged['Distr Histoires Courtes'] = merged['Distr Histoires Courtes'].fillna(0)
+        merged['service_attente_quantity'] = merged['service_attente_quantity'].fillna(0)
 
         if self.next is not None:
             return self.next.process(merged, verbose)

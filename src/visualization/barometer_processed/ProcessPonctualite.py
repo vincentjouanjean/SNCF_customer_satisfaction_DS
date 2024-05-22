@@ -22,8 +22,6 @@ class ProcessPonctualite:
                                                 .replace('sept', "09"))
         df['period_year_month'] = df['period_year'] + '-' + df['period_month']
 
-        display(ponctualite)
-
         merged = df.merge(ponctualite, how='left', left_on='period_year_month',
                           right_on='Date')
 
