@@ -1,6 +1,4 @@
-import matplotlib.pyplot as plt
 import pandas as pd
-import seaborn as sns
 from IPython.core.display_functions import display
 
 pd.set_option('display.max_columns', None)

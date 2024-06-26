@@ -1,8 +1,12 @@
 import pandas as pd
 
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
+pd.set_option('display.width', 1000)
+
 from src.visualization.barometer_processed.ProcessBarometer import ProcessBarometer
-from src.visualization.barometer_processed.ProcessFrequentation import ProcessFrequentation
 from src.visualization.barometer_processed.ProcessEquipment import ProcessEquipment
+from src.visualization.barometer_processed.ProcessFrequentation import ProcessFrequentation
 from src.visualization.barometer_processed.ProcessObj import ProcessObj
 from src.visualization.barometer_processed.ProcessObjRest import ProcessObjRest
 from src.visualization.barometer_processed.ProcessPiano import ProcessPiano
@@ -13,16 +17,16 @@ from src.visualization.barometer_processed.ProcessWifi import ProcessWifi
 
 barometer = pd.read_csv('../../../data/processed/barometer.csv')
 
-processBarometer = ProcessBarometer()
-processEquipment = ProcessEquipment()
-processProprete = ProcessProprete()
-processPiano = ProcessPiano()
-processPointVente = ProcessPointVente()
-processObj = ProcessObj()
-processObjRest = ProcessObjRest()
-processPonctualite = ProcessPonctualite()
-processFrequentation = ProcessFrequentation()
-processWifi = ProcessWifi()
+processBarometer = ProcessBarometer(True, True)
+processEquipment = ProcessEquipment(True, True)
+processProprete = ProcessProprete(True, True)
+processPiano = ProcessPiano(True, True)
+processPointVente = ProcessPointVente(True, True)
+processObj = ProcessObj(True, True)
+processObjRest = ProcessObjRest(True, True)
+processPonctualite = ProcessPonctualite(True, True)
+processFrequentation = ProcessFrequentation(True, True)
+processWifi = ProcessWifi(True, True)
 
 processBarometer.set_next(processEquipment)
 processEquipment.set_next(processProprete)
@@ -34,8 +38,8 @@ processObjRest.set_next(processPonctualite)
 processPonctualite.set_next(processFrequentation)
 processFrequentation.set_next(processWifi)
 
-step1 = processBarometer.process(barometer, False)
+df_output = processBarometer.process(barometer)
 
-step1.to_csv('../../../data/processed/barometer_processed.csv')
+df_output = df_output.drop(columns=['UIC', 'Date', 'period_year_month', 'period_month', 'period_year'], errors='ignore')
 
-
+df_output.to_csv('../../../data/processed/barometer_processed.csv')

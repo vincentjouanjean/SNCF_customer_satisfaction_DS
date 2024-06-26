@@ -1,57 +1,26 @@
-from sklearn.linear_model import LinearRegression, LassoCV, RidgeCV, ElasticNetCV, MultiTaskElasticNetCV, Lasso
-from sklearn import model_selection, preprocessing
-from sklearn.model_selection import cross_val_predict, cross_val_score, cross_validate, train_test_split
-from sklearn.metrics import mean_squared_error
+import warnings
 
+from sklearn import model_selection
+from sklearn.linear_model import Lasso
 
-import numpy as np
-import pandas as pd
-from IPython.core.display_functions import display
-from matplotlib import pyplot as plt
-import seaborn as sns
+from src.models.train import train_reg_model
 
-pd.set_option('display.max_columns', None)
-pd.set_option('display.max_rows', None)
+warnings.filterwarnings('ignore')
 
-barometer = pd.read_csv('../../data/processed/barometer_processed.csv', index_col=0)
+grid_params = {
+    'alpha': [0.1, 1, 5, 10, 30, 50, 100],
+    'fit_intercept': [True, False],
+    'max_iter': [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
+    'tol': [1e-4, 1e-3, 1e-2, 1e0, 1e1, 1e2],
+    'warm_start': [True, False],
+    'positive': [True, False],
+    'selection': ['cyclic', 'random'],
+}
 
-# barometer = barometer[
-#     ['_global', 'accessibilite_quantity', 'taux_proprete', 'Piano', 'Power&Station', 'Baby-Foot', 'Distr Histoires Courtes',
-#      'service_attente_quantity', 'items_found', 'returned_items', 'Régularité composite', 'Ponctualité origine',
-#      'Total Voyageurs', 'Total Voyageurs + Non voyageurs', 'Service Wifi',
-#
-#      'accessibilite_list',
-#      'Type de point de vente',
-#      'CB', 'Chèque', 'Espèces'
-#      ]]
-
-barometer.drop('UIC', axis=1, inplace=True)
-
-barometer = barometer.select_dtypes(include='number')
-
-# display(barometer.corr(numeric_only=True))
-
-#display(barometer.isna().sum())
-
-barometer = barometer.dropna()
-
-X = barometer.drop(['_global', 'p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7'], axis=1)
-y = barometer[['_global', 'p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7']]
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=101)
-scaler = preprocessing.StandardScaler()
-X_train[X_train.columns] = pd.DataFrame(scaler.fit_transform(X_train), index=X_train.index)
-X_test[X_test.columns] = pd.DataFrame(scaler.transform(X_test), index=X_test.index)
-
-# ----------------------------
-
-model = Lasso(alpha=1)
-model.fit(X_train, y_train)
-
-print('score train :', model.score(X_train, y_train))
-print('score test :', model.score(X_test, y_test))
-
-pred = model.predict(X_train)
-pred_test = model.predict(X_test)
-
-print('rmse train :', np.sqrt(mean_squared_error(y_train, pred)))
-print('rmse test : ', np.sqrt(mean_squared_error(y_test, pred_test)))
+model = model_selection.GridSearchCV(
+    Lasso(),
+    grid_params,
+    verbose=0,
+    n_jobs=-1
+)
+train_reg_model(model)

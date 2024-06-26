@@ -10,6 +10,6 @@ barometer = pd.read_csv('../../../data/processed/barometer_clean.csv')
 
 display(barometer.info())
 
-sns.pairplot(data = barometer[['_global','p1','p2','p3', 'p4','p5','p6', 'p7']],diag_kind = 'hist')
+sns.pairplot(data=barometer[['_global', 'p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7']], diag_kind='hist')
 
 plt.show()

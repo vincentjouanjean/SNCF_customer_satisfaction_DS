@@ -1,29 +1,13 @@
 import pandas as pd
-from IPython.core.display_functions import display
-from numpy.core.defchararray import upper
+
+from src.visualization.barometer_processed.IProcess import IProcess
 
 
-class ProcessEquipment:
-    def __init__(self):
-        self.next = None
+class ProcessEquipment(IProcess):
+    def __init__(self, visualize_before, visualize_after):
+        super().__init__(visualize_before, visualize_after)
 
-    def merged(self, period, df, equip, equip_count):
-        barometer_year = df.loc[df['period'] == period]
-        barometer_not_year = df.loc[df['period'] != period]
-        barometer_year = barometer_year.drop(columns=['accessibilite_list', 'accessibilite_quantity'],
-                                             errors='ignore')
-        # equip_count.rename(columns={'Accessibilité': 'accessibilite_quantity'}, inplace=True)
-        merged_tmp = barometer_year.merge(equip, how='left', left_on='Code UIC', right_on="Code UIC")
-        merged_tmp = merged_tmp.merge(equip_count, how='left', left_on='Code UIC', right_on="Code UIC")
-        display(merged_tmp.head(5))
-        merged_tmp.rename(columns={'Accessibilité_x': 'accessibilite_list'}, inplace=True)
-        merged_tmp.rename(columns={'Accessibilité_y': 'accessibilite_quantity'}, inplace=True)
-        return pd.concat([merged_tmp, barometer_not_year])
-
-    def process(self, df: pd.DataFrame, verbose: bool) -> pd.DataFrame:
-        self.df = df
-
-        # barometer = pd.read_csv('../../../data/processed/barometer_clean.csv', index_col=0)
+    def transform(self):
         equipment = pd.read_csv('../../../data/raw/equipement/equipements-accessibilite-en-gares.csv', sep=';')
 
         equipment['Code UIC'] = equipment['UIC'].apply(lambda x: str(x)[2:])
@@ -31,9 +15,10 @@ class ProcessEquipment:
         equipment_count = equipment[['Code UIC', 'Accessibilité']].groupby('Code UIC')['Accessibilité'].count()
         equipment_count = equipment_count.fillna(0)
 
-        equipment = equipment[['Code UIC', 'Accessibilité']].groupby('Code UIC')['Accessibilité'].apply(','.join).reset_index()
+        equipment = equipment[['Code UIC', 'Accessibilité']].groupby('Code UIC')['Accessibilité'].apply(
+            '||'.join).reset_index()
 
-        merged = self.merged('mai 2023', df, equipment, equipment_count)
+        merged = self.merged('mai 2023', self.df, equipment, equipment_count)
         merged = self.merged('sept 2022', merged, equipment, equipment_count)
         merged = self.merged('mars 2022', merged, equipment, equipment_count)
         merged = self.merged('sept 2021', merged, equipment, equipment_count)
@@ -42,29 +27,32 @@ class ProcessEquipment:
         merged = self.merged('sept 2019', merged, equipment, equipment_count)
         merged = self.merged('mars 2019', merged, equipment, equipment_count)
 
-        # barometer_2021 = self.df.loc[self.df['period'] == 'sept 2021']
-        # barometer_not_2021 = self.df.loc[self.df['period'] != 'sept 2021']
-
-        # merged = barometer_2021.merge(equipment2, how='left', left_on='Code UIC', right_on="Code UIC")
-        # merged = merged.merge(equipment_count, how='left', left_on='Code UIC', right_on="Code UIC")
-
-        # merged = pd.concat([merged, barometer_not_2021])
-
-        # merged.rename(columns={'Accessibilité': 'accessibilite_list'}, inplace=True)
-        # merged.rename(columns={'Accessibilité_y': 'accessibilite_quantity'}, inplace=True)
-
         equips = equipment['Accessibilité'].unique()
+        unique_equips = []
         for equip in equips:
-            merged[equip] = merged['accessibilite_list'].apply(lambda x: self.ok(x, equip))
+            unique_equips.extend(equip.split('||'))
+        for equip in set(unique_equips):
+            merged[equip] = merged['accessibilite_list'].apply(lambda x: self.is_equipped(x, equip))
 
-        merged['accessibilite_quantity'] = merged['accessibilite_quantity'].fillna(0)
+        merged['accessibilite_list'] = merged['accessibilite_list'].fillna(' ')
+        merged = merged.fillna(0)
 
-        if self.next is not None:
-            return self.next.process(merged, verbose)
-        else:
-            return merged
+        self.df = merged
 
-    def ok(self, x, equip):
+    @staticmethod
+    def merged(period, df, equip, equip_count):
+        barometer_year = df.loc[df['period'] == period]
+        barometer_not_year = df.loc[df['period'] != period]
+        barometer_year = barometer_year.drop(columns=['accessibilite_list', 'accessibilite_quantity'],
+                                             errors='ignore')
+        merged_tmp = barometer_year.merge(equip, how='left', left_on='Code UIC', right_on="Code UIC")
+        merged_tmp = merged_tmp.merge(equip_count, how='left', left_on='Code UIC', right_on="Code UIC")
+        merged_tmp.rename(columns={'Accessibilité_x': 'accessibilite_list'}, inplace=True)
+        merged_tmp.rename(columns={'Accessibilité_y': 'accessibilite_quantity'}, inplace=True)
+        return pd.concat([merged_tmp, barometer_not_year])
+
+    @staticmethod
+    def is_equipped(x, equip):
         if str(x) != 'nan':
             if equip in x:
                 return 1
@@ -72,12 +60,3 @@ class ProcessEquipment:
                 return 0
         else:
             return 0
-
-    def visualize(self):
-        display(self.df.shape)
-
-    def visualize_after_process(self):
-        display(self.df.isna().sum())
-
-    def set_next(self, next_process):
-        self.next = next_process
