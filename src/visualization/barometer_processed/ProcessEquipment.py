@@ -34,8 +34,7 @@ class ProcessEquipment(IProcess):
         for equip in set(unique_equips):
             merged[equip] = merged['accessibilite_list'].apply(lambda x: self.is_equipped(x, equip))
 
-        merged['accessibilite_list'] = merged['accessibilite_list'].fillna(' ')
-        merged = merged.fillna(0)
+        merged = merged.drop(['accessibilite_list'], axis=1)
 
         self.df = merged
 
