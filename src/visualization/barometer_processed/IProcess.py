@@ -5,12 +5,13 @@ from IPython.core.display_functions import display
 
 
 class IProcess(ABC):
-    def __init__(self, visualize_before=False, visualize_after=False):
+    def __init__(self, visualize_before=False, visualize_after=False, path='../../../'):
         self.next = None
         self.is_visualize_before = visualize_before
         self.is_visualize_after = visualize_after
         self.df_input = None
         self.df = None
+        self.path = path
 
     @abstractmethod
     def transform(self) -> pd.DataFrame:

@@ -20,7 +20,6 @@ barometer = barometer.dropna()
 
 X = barometer.drop(['_global', 'p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7'], axis=1)
 y = barometer[['_global', 'p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7']]
-# y = barometer['_global']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=101)
 
@@ -29,15 +28,14 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 model = MultiTaskElasticNetCV(
     cv=8,
     l1_ratio=(0.1, 0.25, 0.5, 0.7, 0.75, 0.8, 0.85, 0.9, 0.99),
-    alphas=(0.001, 0.01, 0.02, 0.025, 0.05, 0.1, 0.25, 0.5, 0.8, 1.0)
+    alphas=(0.001, 0.01, 0.02, 0.025, 0.05, 0.1, 0.25, 0.5, 0.8, 1.0),
 )
 
-model.fit(X_train, y_train)
-
-enc = OneHotEncoder(handle_unknown='ignore')
-
+enc = OneHotEncoder(handle_unknown='ignore', sparse=False)
 X_train = enc.fit_transform(X_train)
 X_test = enc.transform(X_test)
+
+model.fit(X_train, y_train)
 
 print('score train :', model.score(X_train, y_train))
 print('score test :', model.score(X_test, y_test))

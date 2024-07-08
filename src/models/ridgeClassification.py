@@ -1,7 +1,7 @@
 from sklearn import model_selection
 from sklearn.linear_model import RidgeClassifier
 
-from src.models.train import train_model
+from src.models.train import train_model, display_report
 
 grid_params = {
     'alpha': [0.1, 1, 5, 10, 30, 50, 100],
@@ -14,4 +14,5 @@ grid_params = {
 
 model = model_selection.GridSearchCV(RidgeClassifier(), grid_params, verbose=1)
 
-train_model(model)
+report = train_model(model)
+display_report(report)

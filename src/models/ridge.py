@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn import model_selection
 from sklearn.linear_model import Ridge
 
-from src.models.train import train_reg_model
+from src.models.train import train_reg_model, display_report
 
 warnings.filterwarnings('ignore')
 
@@ -26,4 +26,8 @@ model = model_selection.GridSearchCV(
     n_jobs=-1
 )
 
-train_reg_model(model)
+report = train_reg_model(model, one_hot_encoder=True, standard_scaler=False, test_size=0.2)
+display_report(report)
+
+report = train_reg_model(model, one_hot_encoder=True, standard_scaler=True)
+display_report(report)

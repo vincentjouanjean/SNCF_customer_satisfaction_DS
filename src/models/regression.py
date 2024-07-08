@@ -1,6 +1,6 @@
-from sklearn import model_selection
 from sklearn.linear_model import LinearRegression
 
-from src.models.train import train_reg_model
+from src.models.train import train_reg_model, display_report
 
-train_reg_model(model_selection.GridSearchCV(LinearRegression(), param_grid={}))
+report = train_reg_model(LinearRegression())
+display_report(report)

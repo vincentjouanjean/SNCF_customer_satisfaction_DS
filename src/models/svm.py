@@ -1,7 +1,7 @@
 from sklearn import model_selection
 from sklearn import svm
 
-from src.models.train import train_model
+from src.models.train import train_model, display_report
 
 grid_params = {
     'C': [0.1, 1, 10, 100, 1000],
@@ -16,4 +16,5 @@ model = model_selection.GridSearchCV(
     verbose=1
 )
 
-train_model(model)
+report = train_model(model)
+display_report(report)

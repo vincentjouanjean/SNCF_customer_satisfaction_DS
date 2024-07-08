@@ -1,7 +1,7 @@
 from sklearn import model_selection
 from sklearn.tree import DecisionTreeClassifier
 
-from src.models.train import train_model
+from src.models.train import train_model, display_report
 
 grid_params = {
     'criterion': ['gini', 'entropy'],
@@ -15,4 +15,8 @@ model = model_selection.GridSearchCV(
     verbose=1
 )
 
-train_model(model)
+report = train_model(model)
+display_report(report)
+
+report = train_model(model)
+display_report(report)

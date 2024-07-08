@@ -1,11 +1,7 @@
-import warnings
-
 from sklearn import model_selection
 from sklearn.linear_model import Lasso
 
-from src.models.train import train_reg_model
-
-warnings.filterwarnings('ignore')
+from src.models.train import train_reg_model, display_report
 
 grid_params = {
     'alpha': [0.1, 1, 5, 10, 30, 50, 100],
@@ -23,4 +19,5 @@ model = model_selection.GridSearchCV(
     verbose=0,
     n_jobs=-1
 )
-train_reg_model(model)
+report = train_reg_model(model)
+display_report(report)

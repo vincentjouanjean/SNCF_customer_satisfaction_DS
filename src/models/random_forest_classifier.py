@@ -1,7 +1,8 @@
 from sklearn.ensemble import RandomForestClassifier
 
-from src.models.train import train_model
+from src.models.train import train_model, display_report
 
 model = RandomForestClassifier()
 
-train_model(model)
+report = train_model(model)
+display_report(report)
