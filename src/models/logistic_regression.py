@@ -1,7 +1,7 @@
 from sklearn import linear_model
 from sklearn import model_selection
 
-from src.models.train import train_model
+from src.models.train import train_model, display_report
 
 grid_params = {
     'solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'],
@@ -17,4 +17,5 @@ model = model_selection.GridSearchCV(
     verbose=1
 )
 
-train_model(model)
+report = train_model(model)
+display_report(report)

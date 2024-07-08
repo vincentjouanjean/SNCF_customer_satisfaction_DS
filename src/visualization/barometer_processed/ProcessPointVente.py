@@ -38,4 +38,18 @@ class ProcessPointVente(IProcess):
         merged['Espèces'] = merged['Espèces'].apply(lambda x: yes_or_not(x))
         merged['Type de point de vente'] = merged['Type de point de vente'].fillna(' ')
 
+        merged['Poste de vente guichet'] = merged['Type de point de vente'].apply(lambda x: self.is_present(x, 'Poste de vente guichet'))
+        merged['Automates TGV-Intercités'] = 'Automates TGV-Intercités' in merged['Type de point de vente']
+        merged['Automates TER'] = 'Automates TER' in merged['Type de point de vente']
+        merged['Libre-Service Assisté'] = 'Libre-Service Assisté' in merged['Type de point de vente']
+
+        merged = merged.drop(['Type de point de vente'], axis=1)
+
         self.df = merged
+
+    @staticmethod
+    def is_present(x, equip):
+        if isinstance(x, str) and equip in x:
+            return 1
+        else:
+            return 0

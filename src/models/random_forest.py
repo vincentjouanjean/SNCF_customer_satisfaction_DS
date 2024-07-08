@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import RandomizedSearchCV
 
-from src.models.train import train_reg_model
+from src.models.train import train_reg_model, display_report
 
 # Number of trees in random forest
 n_estimators = [int(x) for x in np.linspace(start=200, stop=2000, num=3)]
@@ -38,4 +38,5 @@ model = RandomizedSearchCV(
     error_score='raise'
 )
 
-train_reg_model(RandomForestRegressor())
+report = train_reg_model(RandomForestRegressor())
+display_report(report)

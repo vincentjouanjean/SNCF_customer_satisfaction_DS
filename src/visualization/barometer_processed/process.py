@@ -41,5 +41,13 @@ processFrequentation.set_next(processWifi)
 df_output = processBarometer.process(barometer)
 
 df_output = df_output.drop(columns=['UIC', 'Date', 'period_year_month', 'period_month', 'period_year'], errors='ignore')
+df_output = df_output.drop(columns=['Gare'], errors='ignore')
+# df_output = df_output.drop(columns=['Code UIC'], errors='ignore')
+# df_output = df_output.drop(columns=['DRG', 'Région (UG)', 'Typologie de la gare', 'Niveau de service'], errors='ignore')
+# self.df = self.df.drop('Gare', axis=1)
+# self.df = self.df.drop('DRG', axis=1)
+# self.df = self.df.drop('Région (UG)', axis=1)
+# self.df = self.df.drop('Typologie de la gare', axis=1)
+# self.df = self.df.drop('Niveau de service', axis=1)
 
 df_output.to_csv('../../../data/processed/barometer_processed.csv')

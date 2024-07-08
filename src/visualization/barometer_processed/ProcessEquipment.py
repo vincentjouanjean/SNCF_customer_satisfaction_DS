@@ -4,11 +4,11 @@ from src.visualization.barometer_processed.IProcess import IProcess
 
 
 class ProcessEquipment(IProcess):
-    def __init__(self, visualize_before, visualize_after):
-        super().__init__(visualize_before, visualize_after)
+    def __init__(self, visualize_before, visualize_after, path='../../../'):
+        super().__init__(visualize_before, visualize_after, path)
 
     def transform(self):
-        equipment = pd.read_csv('../../../data/raw/equipement/equipements-accessibilite-en-gares.csv', sep=';')
+        equipment = pd.read_csv(self.path + 'data/raw/equipement/equipements-accessibilite-en-gares.csv', sep=';')
 
         equipment['Code UIC'] = equipment['UIC'].apply(lambda x: str(x)[2:])
         equipment = equipment[['Code UIC', 'Accessibilité']]
@@ -49,6 +49,7 @@ class ProcessEquipment(IProcess):
         merged_tmp = merged_tmp.merge(equip_count, how='left', left_on='Code UIC', right_on="Code UIC")
         merged_tmp.rename(columns={'Accessibilité_x': 'accessibilite_list'}, inplace=True)
         merged_tmp.rename(columns={'Accessibilité_y': 'accessibilite_quantity'}, inplace=True)
+        merged_tmp['accessibilite_quantity'] = merged_tmp['accessibilite_quantity'].fillna(0)
         return pd.concat([merged_tmp, barometer_not_year])
 
     @staticmethod

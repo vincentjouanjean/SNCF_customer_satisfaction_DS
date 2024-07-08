@@ -4,7 +4,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
-from src.models.train import train_model
+from src.models.train import train_model, display_report
 
 clf1 = KNeighborsClassifier(
     algorithm='auto',
@@ -39,4 +39,5 @@ model = VotingClassifier(
     voting='hard'
 )
 
-train_model(model)
+report = train_model(model)
+display_report(report)

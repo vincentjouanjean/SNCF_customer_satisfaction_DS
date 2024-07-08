@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from IPython.core.display_functions import display
 
 from src.visualization.barometer_processed.IProcess import IProcess
 

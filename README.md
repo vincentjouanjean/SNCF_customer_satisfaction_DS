@@ -42,4 +42,45 @@ Project Organization
 
 --------
 
+# Retrieve Data
+
+Copy Open SNCF data to `./data/raw` - https://data.sncf.com/pages/accueil/
+
+- data/raw/barometre-client/BSC sept 2021.csv : https://data.sncf.com/explore/dataset/barometre-client/information/ (convert it to csv)
+- data/raw/barometre-client/BSC mars 2022.xlsx : https://data.sncf.com/explore/dataset/barometre-client/information/
+- data/raw/barometre-client/BSC sept 2022.xlsx : https://data.sncf.com/explore/dataset/barometre-client/information/
+- data/raw/barometre-client/BSC mai 2023.xlsx : https://data.sncf.com/explore/dataset/barometre-client/information/
+- data/raw/equipement/equipements-accessibilite-en-gares.csv : https://data.sncf.com/explore/dataset/equipements-accessibilite-en-gares/information/
+- data/raw/proprete/proprete-en-gare.csv : https://data.sncf.com/explore/dataset/proprete-en-gare/information/
+- data/raw/gare/gares-pianos.csv : https://data.sncf.com/explore/dataset/gares-pianos/information/
+- data/raw/horaire/points-vente.csv : https://data.sncf.com/explore/dataset/points-vente/information/
+- data/raw/obj/objets-trouves-gares.csv : https://data.sncf.com/explore/dataset/objets-trouves-gares/information/
+- data/raw/obj/objets-trouves-restitution.csv : https://data.sncf.com/explore/dataset/objets-trouves-restitution/information/
+- data/raw/ponctualite/reglarite-mensuelle-tgv-nationale.csv : https://data.sncf.com/explore/dataset/reglarite-mensuelle-tgv-nationale/information/
+- data/raw/voyage/frequentation-gares.csv : https://data.sncf.com/explore/dataset/frequence-gare/information/
+- data/raw/voyage/gares-equipees-du-wifi.csv : https://data.sncf.com/explore/dataset/gares-equipees-du-wifi/information/
+
+# Process - concatenation barometers
+
+```
+cd .
+python src/visualization/barometer/process.py
+```
+
+# Process - integration of indicators
+
+```
+cd .
+python src/visualization/barometer_processed/process.py
+```
+
+# Run Streamlit
+
+```
+cd .
+python -m streamlit run src/streamlit/0_🚄_Projet.py
+```
+
+# 
+
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>

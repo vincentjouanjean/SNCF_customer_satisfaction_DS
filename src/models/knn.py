@@ -1,16 +1,12 @@
-import warnings
-
 from sklearn import model_selection
 from sklearn import neighbors
 
-from src.models.train import train_model
-
-warnings.filterwarnings('ignore')
+from src.models.train import train_model, display_report
 
 grid_params = {
     'n_neighbors': range(2, 40),
     'weights': ['uniform', 'distance'],
-    'algorithm': ['auto', 'ball_tree', 'kd_tree'],
+    'algorithm': ['auto'],
     'leaf_size': [5, 10, 20],
     'p': [1, 2],
     'metric': ['euclidean', 'manhattan']
@@ -23,4 +19,5 @@ model = model_selection.GridSearchCV(
     verbose=1
 )
 
-train_model(model)
+report = train_model(model)
+display_report(report)

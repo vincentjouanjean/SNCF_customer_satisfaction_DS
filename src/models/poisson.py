@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn import model_selection
 from sklearn.linear_model import PoissonRegressor
 
-from src.models.train import train_reg_model
+from src.models.train import train_reg_model, display_report
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -16,7 +16,7 @@ grid_params = {
     'warm_start': [True, False]
 }
 
-train_reg_model(
+report = train_reg_model(
     model_selection.GridSearchCV(
         PoissonRegressor(),
         grid_params,
@@ -24,3 +24,4 @@ train_reg_model(
         n_jobs=-1
     )
 )
+display_report(report)
